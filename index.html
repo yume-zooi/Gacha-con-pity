@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gacha con Pity</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #ffd700;
+    }
+
+    button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    .result {
+      margin: 10px;
+      font-size: 1.5em;
+    }
+
+    .five {
+      color: gold;
+    }
+
+    .four {
+      color: violet;
+    }
+
+    .three {
+      color: #999;
+    }
+
+    #results {
+      margin-top: 30px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎰 Gacha con Pity</h1>
+  <button onclick="rollOnce()">Tirar 1 vez</button>
+  <button onclick="rollTen()">Tirar 10 veces</button>
+  <div id="results"></div>
+
+  <script>
+    class Gacha {
+      constructor() {
+        this.fiveStarPity = 0;
+        this.fourStarPity = 0;
+      }
+
+      roll() {
+        this.fiveStarPity++;
+        this.fourStarPity++;
+
+        let result;
+        const rand = Math.random();
+
+        if (this.fiveStarPity >= 90) {
+          result = '⭐⭐⭐⭐⭐';
+          this.resetPity();
+        } else if (this.fourStarPity >= 10) {
+          result = '⭐⭐⭐⭐';
+          this.fourStarPity = 0;
+        } else {
+          if (rand < 0.006) { // 0.6% probabilidad 5 estrellas
+            result = '⭐⭐⭐⭐⭐';
+            this.resetPity();
+          } else if (rand < 0.051) { // 5.1% probabilidad 4 estrellas
+            result = '⭐⭐⭐⭐';
+            this.fourStarPity = 0;
+          } else {
+            result = '⭐⭐⭐';
+          }
+        }
+
+        return result;
+      }
+
+      resetPity() {
+        this.fiveStarPity = 0;
+        this.fourStarPity = 0;
+      }
+
+      multiRoll(times = 10) {
+        const results = [];
+        for (let i = 0; i < times; i++) {
+          results.push(this.roll());
+        }
+        return results;
+      }
+    }
+
+    const gacha = new Gacha();
+
+    function showResult(result) {
+      const div = document.getElementById('results');
+      const el = document.createElement('div');
+      el.className = 'result';
+      el.textContent = result;
+
+      if (result
