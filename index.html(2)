@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gacha con Pity</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #6ec7f0;
+    }
+
+    button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      background-color: #666666;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #808080;
+    }
+
+    .result {
+      margin: 10px;
+      font-size: 1.5em;
+    }
+
+    .five {
+      color: gold;
+    }
+
+    .four {
+      color: violet;
+    }
+
+    .three {
+      color: #blue;
+    }
+
+    #results {
+      margin-top: 30px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .reward {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1> Gacha con Pity</h1>
+  <button onclick="rollOnce()">Tirar 1 vez</button>
+  <div id="results"></div>
+
+  <script>
+    class Gacha {
+      constructor() {
+        this.fiveStarPity = 0;
+        this.fourStarPity = 0;
+      }
+
+      roll() {
+        this.fiveStarPity++;
+        this.fourStarPity++;
+
+        let result;
+        let reward;
+
+        const rand = Math.random();
+
+        if (this.fiveStarPity >= 90) {
+          result = '⭐⭐⭐⭐⭐';
+          reward = this.getFiveStarReward();
+          this.resetPity();
+        } else if (this.fourStarPity >= 10) {
+          result = '⭐⭐⭐⭐';
+          reward = this.getFourStarReward();
+          this.fourStarPity = 0;
+        } else {
+          if (rand < 0.006) { // 0.6% probabilidad 5 estrellas
+            result = '⭐⭐⭐⭐⭐';
+            reward = this.getFiveStarReward();
+            this.resetPity();
+          } else if (rand < 0.051) { // 5.1% probabilidad 4 estrellas
+            result = '⭐⭐⭐⭐';
+            reward = this.getFourStarReward();
+            this.fourStarPity = 0;
+          } else {
+            result = '⭐⭐⭐';
+            reward = this.getThreeStarReward();
+          }
+        }
+
+        return { result, reward };
+      }
+
+      resetPity() {
+        this.fiveStarPity = 0;
+        this.fourStarPity = 0;
+      }
+
+      multiRoll(times = 10) {
+        const results = [];
+        for (let i = 0; i < times; i++) {
+          results.push(this.roll());
+        }
+        return results;
+      }
+
+      // Recompensas por calidad
+      getThreeStarReward() {
+        const rewards = ['libro x1', 'libro x2', 'libro x3'];
+        return rewards[Math.floor(Math.random() * rewards.length)];
+      }
+
+      getFourStarReward() {
+        const rewards = ['VIP (30 dias)', 'Segundo personaje (7 dias)', '1k mora', 'admin temporal (7 dias)', 'Protogemas (800)' ];
+        return rewards[Math.floor(Math.random() * rewards.length)];
+      }
+
+      getFiveStarReward() {
+        const rewards = ['Local', 'Segundo personaje', 'AU', Protogemas (1600)', '4k mora'];
+        return rewards[Math.floor(Math.random() * rewards.length)];
+      }
+    }
+
+    const gacha = new Gacha();
+
+    function showResult(result, reward) {
+      const div = document.getElementById('results');
+      const el = document.createElement('div');
+      el.className = 'result';
+      el.textContent = result;
+
+      const rewardEl = document.createElement('div');
+      rewardEl.className = 'reward';
+      rewardEl.textContent = `Recompensa: ${reward}`;
+
+      if (result.includes('⭐⭐⭐⭐⭐')) el.classList.add('five');
+      else if (result.includes('⭐⭐⭐⭐')) el.classList.add('four');
+      else el.classList.add('three');
+
+      div.prepend(el);
+      div.prepend(rewardEl);
+    }
+
+    function rollOnce() {
+      const { result, reward } = gacha.roll();
+      showResult(result, reward);
+    }
+  </script>
+</body>
+</html>
